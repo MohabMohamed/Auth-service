@@ -12,6 +12,10 @@ To get you a copy of the production version of the project up and running on you
 docker-compose up -d --force-recreate
 ```
 
+## Database Design
+
+![Auth service database scheme](./screenshoots/dbSchema.png "Auth service database scheme")
+
 ## Contribution
 
 check [contribution guide](./CONTRIBUTION.md)
