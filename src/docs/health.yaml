@@ -1,0 +1,13 @@
+paths:
+  /health:
+    get:
+      tags:
+        - health
+      summary: Check if the service is up and running.
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Service is up and running
+        500:
+          description: Service is down

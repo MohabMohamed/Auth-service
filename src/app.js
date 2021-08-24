@@ -1,5 +1,6 @@
 const express = require('express')
 const { NODE_ENV_ENUM, runIfEnv } = require('./util/node-env')
+const healthRouter = require('./routers/health')
 
 const app = express()
 
@@ -26,5 +27,6 @@ runIfEnv(NODE_ENV_ENUM.dev, () => {
 })
 
 app.use(express.json())
+app.use(healthRouter)
 
 module.exports = app
