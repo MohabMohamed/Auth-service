@@ -1,0 +1,23 @@
+version: "3.7"
+services:
+  auth_service:
+      build:
+        context: .
+        target: production
+      command:  "npm run start"
+      working_dir: /app
+      env_file:
+        - ./config/prod.env
+      ports:
+        - 3000:3000
+      depends_on:
+        - postgres
+      restart: always
+  postgres:
+    image: postgres:13.3-alpine
+    env_file:
+      - ./config/prod.env
+    ports: 
+      - '5432:5432'
+    volumes:
+      - ~/pg_data/crafty_shop_prod:/var/lib/postgresql/data

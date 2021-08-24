@@ -1,0 +1,25 @@
+version: "3.7"
+services:
+  auth_service_dev:
+      build:
+        context: .
+      working_dir: /app
+      env_file:
+        - ./config/dev.env
+      ports:
+        - 3000:3000
+      depends_on:
+        - postgres
+      volumes:
+        - ./:/app
+  postgres:
+    image: postgres:13.3-alpine
+    env_file:
+      -  ./config/dev.env
+    expose: 
+      - '3587'
+    ports: 
+      - '3587:5432'
+    volumes:
+      - ~/pg_data/crafty_shop_dev:/var/lib/postgresql/data
+    
