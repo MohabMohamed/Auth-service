@@ -16,7 +16,7 @@ fs.readdirSync(modelsDirPath)
 // building the associations between models
 Object.keys(models).forEach(modelName => {
   if (models[modelName].associate) {
-    models[modelName].associate(models)
+    //   models[modelName].associate(models)
   }
 })
 

@@ -103,10 +103,12 @@ User.associate = models => {
     onDelete: 'CASCADE'
   })
 
-  User.belongsTo(models.role, {
+  User.belongsTo(models.Role, {
     foreignKey: 'roleId',
     as: 'role',
     onUpdate: 'CASCADE',
     onDelete: 'SET DEFAULT'
   })
 }
+
+module.exports = User
