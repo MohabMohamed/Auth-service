@@ -1,8 +1,13 @@
 const express = require('express')
-const { NODE_ENV_ENUM, runIfEnv } = require('./util/node-env')
+const { NODE_ENV_ENUM, runIfEnv, runIfNotEnv } = require('./util/node-env')
 const healthRouter = require('./routers/health')
+const db = require('./db/index')
 
 const app = express()
+
+runIfNotEnv(NODE_ENV_ENUM.test, async () => {
+  await db.initDB()
+})
 
 runIfEnv(NODE_ENV_ENUM.prod, () => {
   const helmet = require('helmet')
