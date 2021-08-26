@@ -1,0 +1,32 @@
+paths:
+  /authorize:
+    post:
+      tags:
+        - permission
+      summary: check if user authorized to access an endpoint on another service.
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: sign up
+          description: check if user authorized to access an endpoint on another service.
+          required: true
+          schema:
+            $ref: "#/definitions/permission"
+      responses:
+        200:
+          description: authorized.
+        401:
+          description: unauthorized.
+definitions:
+  permission:
+    required:
+      - httpMethod
+      - path
+    properties:
+      httpMethod:
+        type: string
+        example: "post"
+      path:
+        type: string
+        example: "/products"

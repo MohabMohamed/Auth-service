@@ -4,6 +4,7 @@ const { NODE_ENV_ENUM, runIfEnv, runIfNotEnv } = require('./util/node-env')
 const healthRouter = require('./routers/health')
 const userRouter = require('./routers/user')
 const roleRouter = require('./routers/role')
+const permissionRouter = require('./routers/permission')
 const db = require('./db/index')
 
 const app = express()
@@ -38,5 +39,6 @@ app.use(cookieParser())
 app.use(healthRouter)
 app.use(userRouter)
 app.use(roleRouter)
+app.use(permissionRouter)
 
 module.exports = app

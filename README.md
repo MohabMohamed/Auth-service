@@ -162,3 +162,33 @@ Status codes:
 409:
   There's a role with the same name.
 ```
+
+### `POST /authorize`
+
+check if user authorized to access an endpoint on another service.
+
+Request:
+
+```js
+{
+    httpMethod: String,
+    path: String
+}
+```
+
+Response:
+
+```js
+{
+  authorized: Boolean
+}
+```
+
+Status codes:
+
+```yaml
+200:
+  authorized.
+401:
+  unauthorized.
+```
