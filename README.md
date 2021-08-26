@@ -16,6 +16,16 @@ docker-compose up -d --force-recreate
 
 ![Auth service database scheme](./screenshoots/dbSchema.png "Auth service database scheme")
 
+## System workflow
+
+Authentication workflow:
+
+user [post /users/login] --> Api gateway --> Auth service [response] --> Api gateway --> user
+
+Authorization workflow:
+
+user [get /products] --> Api gateway --> product service [post /authorize] with request body {httpMethod:'get',path:'/products'} --> Auth service [response] --> product service [response] --> Api gateway --> user
+
 ## Contribution
 
 check [contribution guide](./CONTRIBUTION.md)
@@ -192,3 +202,7 @@ Status codes:
 401:
   unauthorized.
 ```
+
+## Leftout work
+
+some endpoint related to roles and permissions and implementing a caching layer for permissions with redis.
