@@ -1,7 +1,10 @@
 const User = require('../../src/models/user')
 const db = require('../../src/db/index')
+const RefreshToken = require('../../src/models/refresh-token')
 
+const firstUserId = 1
 const firstUser = {
+  id: firstUserId,
   firstName: 'mohab',
   lastName: 'Abd El-Dayem',
   email: 'test@gmail.com',
@@ -13,6 +16,7 @@ const firstRefreshToken = User.generateRefreshToken()
 
 const setupDatabase = async () => {
   await User.destroy({ where: {} })
+  await RefreshToken.destroy({ where: {} })
   firstUser.refreshToken = { token: firstRefreshToken }
 
   await User.create(firstUser, {
@@ -24,4 +28,4 @@ const cleanDB = async () => {
   db.sequelize.close()
 }
 
-module.exports = { firstUser, firstRefreshToken, setupDatabase, cleanDB }
+module.exports = { firstUser, firstUserId, firstRefreshToken, setupDatabase, cleanDB }

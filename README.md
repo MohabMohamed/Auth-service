@@ -117,3 +117,16 @@ Status codes:
         401:
           can't logout the user.
 ```
+
+### `Get /users/logoutall`
+
+logout the user from all sessions.
+
+Status codes:
+
+```yaml
+        200:
+          The user logged out successfully.
+        401:
+          can't logout the user.
+```

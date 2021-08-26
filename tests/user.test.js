@@ -1,6 +1,6 @@
 const request = require('supertest')
 const { CookieAccessInfo } = require('cookiejar')
-const { setupDatabase, cleanDB, firstRefreshToken } = require('./fixtures/db')
+const { setupDatabase, cleanDB, firstRefreshToken, firstUser, firstUserAfterSaved, firstUserId } = require('./fixtures/db')
 const app = require('../src/app')
 const User = require('../src/models/user')
 const RefreshToken = require('../src/models/refresh-token')
@@ -80,6 +80,15 @@ test('should logout the user', async () => {
   await agent.get('/users/logout').send().expect(200)
 
   const matchedRefreshToken = await RefreshToken.findOne({ where: { token: firstRefreshToken } })
+
+  expect(matchedRefreshToken).toBeNull()
+})
+
+test('should logout the user from all sessions', async () => {
+  agent.jar.setCookie(`refreshToken=${firstRefreshToken}`)
+  await agent.get('/users/logoutall').send().expect(200)
+
+  const matchedRefreshToken = await RefreshToken.findOne({ where: { userId: firstUserId } })
 
   expect(matchedRefreshToken).toBeNull()
 })

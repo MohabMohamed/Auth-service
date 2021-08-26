@@ -83,4 +83,31 @@ router.get('/users/logout', auth, async (req, res) => {
   }
 })
 
+router.get('/users/logoutAll', auth, async (req, res) => {
+  try {
+    if (!req.refreshToken) {
+      throw new Error()
+    }
+    await RefreshToken.destroy({
+      where: {
+        userId: req.user.id
+      }
+    })
+
+    res.cookie('accessToken', null, {
+      maxAge: 0,
+      httpOnly: true
+    })
+
+    res.cookie('refreshToken', null, {
+      maxAge: 0,
+      httpOnly: true
+    })
+
+    res.send({ ok: true })
+  } catch (e) {
+    res.status(401).send()
+  }
+})
+
 module.exports = router
