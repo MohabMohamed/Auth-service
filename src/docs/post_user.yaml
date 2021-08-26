@@ -1,0 +1,46 @@
+paths:
+  /users:
+    post:
+      tags:
+        - user
+      summary: Register new user.
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: sign up
+          description: It enables a user to create an account
+          required: true
+          schema:
+            $ref: "#/definitions/signUp"
+      responses:
+        201:
+          description: The user created and the user info returned.
+        422:
+          description: Error in one or more inputs format as a weak password or putting an invalid email.
+        409:
+          description: There's an account with the same email.
+definitions:
+  signUp:
+    required:
+      - firstName
+      - lastName
+      - email
+      - password
+      - phoneNumber
+    properties:
+      firstName:
+        type: string
+        example: "john"
+      lastName:
+        type: string
+        example: "doe"
+      email:
+        type: string
+        example: "johndoe@example.com"
+      password:
+        type: string
+        example: "12345a@Z"
+      phoneNumber:
+        type: string
+        example: "01100000"

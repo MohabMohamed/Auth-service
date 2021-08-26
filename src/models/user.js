@@ -1,8 +1,10 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../db/db')
 const bcrypt = require('bcryptjs')
+const { v4: uuid } = require('uuid')
 const basicRoles = require('../util/basicRoles')
 const userError = require('../errors/userError')
+const jwt = require('../util/jwt')
 
 const User = sequelize.define(
   'User',
@@ -92,7 +94,54 @@ User.prototype.toJSON = function () {
     delete newUser.password
   }
 
+  if (newUser.refreshToken) {
+    delete newUser.refreshToken
+  }
+
+  if (newUser.createdAt) {
+    delete newUser.createdAt
+  }
+
+  if (newUser.updatedAt) {
+    delete newUser.updatedAt
+  }
+
   return newUser
+}
+
+User.register = async userData => {
+  // remove roleId and id if they present in the request
+  const { roleId, id, ...user } = Object.assign({}, userData)
+
+  const matchedUser = await User.findOne({
+    where: {
+      email: user.email
+    }
+  })
+
+  if (matchedUser) {
+    throw userError.existingEmail()
+  }
+
+  const refreshToken = jwt.sign(
+    { session: uuid() },
+    process.env.REFRESH_JWT_SECRET,
+    Number(process.env.REFRESH_TOKEN_LIFE_SPAN)
+  )
+  try {
+    const newUser = await User.create(
+      {
+        ...user,
+        refreshToken: { token: refreshToken }
+      },
+      {
+        include: ['refreshToken']
+      }
+    )
+    return newUser
+  } catch (error) {
+    throw userError.unableToRegister()
+  }
 }
 
 User.associate = models => {
