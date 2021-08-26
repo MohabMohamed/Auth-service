@@ -130,3 +130,35 @@ Status codes:
         401:
           can't logout the user.
 ```
+
+### `POST /roles`
+
+Add new role.
+
+Request:
+
+```js
+{
+    roleName: String
+}
+```
+
+Response:
+
+```js
+{
+  id : String,
+  roleName : String,
+}
+```
+
+Status codes:
+
+```yaml
+201:
+  new role created.
+401:
+  user unauthorized to create new role.
+409:
+  There's a role with the same name.
+```

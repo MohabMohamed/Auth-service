@@ -1,0 +1,30 @@
+paths:
+  /users:
+    post:
+      tags:
+        - role
+      summary: add new role.
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: sign up
+          description: It enables a user to create a new role.
+          required: true
+          schema:
+            $ref: "#/definitions/newRole"
+      responses:
+        201:
+          description: new role created.
+        401:
+          description: user unauthorized to create new role.
+        409:
+          description: There's a role with the same name.
+definitions:
+  newRole:
+    required:
+      - roleName
+    properties:
+      roleName:
+        type: string
+        example: "supervisor"

@@ -3,7 +3,7 @@ const User = require('../models/user')
 const RefreshToken = require('../models/refresh-token')
 const rules = require('../middleware/validators/user-rules')
 const validate = require('../middleware/validators/validator')
-const auth = require('../middleware/auth')
+const { authenticate } = require('../middleware/auth')
 
 const router = new express.Router()
 
@@ -57,7 +57,7 @@ router.post('/users/login', rules.postLogin(), validate, async (req, res) => {
   }
 })
 
-router.get('/users/logout', auth, async (req, res) => {
+router.get('/users/logout', authenticate, async (req, res) => {
   try {
     if (!req.refreshToken) {
       throw new Error()
@@ -83,7 +83,7 @@ router.get('/users/logout', auth, async (req, res) => {
   }
 })
 
-router.get('/users/logoutAll', auth, async (req, res) => {
+router.get('/users/logoutAll', authenticate, async (req, res) => {
   try {
     if (!req.refreshToken) {
       throw new Error()

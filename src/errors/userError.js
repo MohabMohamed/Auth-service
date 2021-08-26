@@ -19,4 +19,15 @@ const existingEmail = () => {
   }
 }
 
-module.exports = { unableToLogin, existingEmail, unableToRegister }
+const unauthorized = () => {
+  return {
+    code: 401,
+    errors: ['Sorry but you are unauthorized for this action.']
+  }
+}
+module.exports = {
+  unableToLogin,
+  existingEmail,
+  unableToRegister,
+  unauthorized
+}

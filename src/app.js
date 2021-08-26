@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser')
 const { NODE_ENV_ENUM, runIfEnv, runIfNotEnv } = require('./util/node-env')
 const healthRouter = require('./routers/health')
 const userRouter = require('./routers/user')
+const roleRouter = require('./routers/role')
 const db = require('./db/index')
 
 const app = express()
@@ -13,7 +14,6 @@ runIfNotEnv(NODE_ENV_ENUM.test, async () => {
 
 runIfEnv(NODE_ENV_ENUM.prod, () => {
   const helmet = require('helmet')
-  console.log('helmet')
   app.use(helmet())
 })
 
@@ -37,5 +37,6 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(healthRouter)
 app.use(userRouter)
+app.use(roleRouter)
 
 module.exports = app

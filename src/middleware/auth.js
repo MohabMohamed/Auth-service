@@ -1,8 +1,11 @@
 const jwt = require('../util/jwt')
 const RefreshToken = require('../models/refresh-token')
+const Role = require('../models/role')
 const refreshTokenError = require('../errors/refreshTokenError')
+const { unauthorized } = require('../errors/userError')
+const { existingRole } = require('../errors/roleError')
 
-const auth = async (req, res, next) => {
+const authenticate = async (req, res, next) => {
   try {
     const { accessToken, refreshToken } = req.cookies
 
@@ -58,5 +61,29 @@ const auth = async (req, res, next) => {
     res.status(statusCode).send(error)
   }
 }
+const authorize = roles => {
+  if (typeof roles === 'string') {
+    roles = [roles]
+  }
 
-module.exports = auth
+  return async (req, res, next) => {
+    try {
+      const matchedRole = await Role.findOne({
+        where: { id: parseInt(req.user.roleId) }
+      })
+
+      if (!matchedRole) {
+        throw existingRole()
+      }
+
+      if (roles.includes(matchedRole.roleName) === false) {
+        throw unauthorized()
+      }
+      next()
+    } catch (error) {
+      res.status(error.code).send(error)
+    }
+  }
+}
+
+module.exports = { authenticate, authorize }

@@ -63,7 +63,7 @@ test('Should login the user', async () => {
       token: ResponseRefreshToken
     }
   })
-  console.log(refreshToken)
+
   expect(refreshToken).not.toBeNull()
   expect(refreshToken.token).toBe(ResponseRefreshToken)
 })
