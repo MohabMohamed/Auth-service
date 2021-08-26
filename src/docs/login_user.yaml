@@ -1,0 +1,32 @@
+paths:
+  /users/login:
+    post:
+      tags:
+        - user
+      summary: login new user.
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: login
+          description: It authenticate user credentials and log him into the system.
+          required: true
+          schema:
+            $ref: "#/definitions/login"
+      responses:
+        200:
+          description: The user credentials are correct and he logged into the system.
+        401:
+          description: The user credentials are wrong.
+definitions:
+  login:
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        example: "johndoe@example.com"
+      password:
+        type: string
+        example: "12345a@Z"

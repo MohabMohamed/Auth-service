@@ -109,6 +109,30 @@ User.prototype.toJSON = function () {
   return newUser
 }
 
+User.prototype.generateAccessToken = function () {
+  const { id, roleId, firstName, lastName, email } = this.dataValues
+
+  return jwt.sign(
+    {
+      id,
+      roleId,
+      firstName,
+      lastName,
+      email
+    },
+    process.env.ACCESS_JWT_SECRET,
+    Number(process.env.ACCESS_TOKEN_LIFE_SPAN)
+  )
+}
+
+User.generateRefreshToken = function () {
+  return jwt.sign(
+    { session: uuid() },
+    process.env.REFRESH_JWT_SECRET,
+    Number(process.env.REFRESH_TOKEN_LIFE_SPAN)
+  )
+}
+
 User.register = async userData => {
   // remove roleId and id if they present in the request
   const { roleId, id, ...user } = Object.assign({}, userData)
@@ -123,11 +147,8 @@ User.register = async userData => {
     throw userError.existingEmail()
   }
 
-  const refreshToken = jwt.sign(
-    { session: uuid() },
-    process.env.REFRESH_JWT_SECRET,
-    Number(process.env.REFRESH_TOKEN_LIFE_SPAN)
-  )
+  const refreshToken = User.generateRefreshToken()
+
   try {
     const newUser = await User.create(
       {

@@ -35,7 +35,7 @@ test('Should register new user', async () => {
   })
 
   expect(refreshToken).not.toBeNull()
-  expect(refreshToken.getDataValue('token')).toBe(ResponseRefreshToken)
+  expect(refreshToken.token).toBe(ResponseRefreshToken)
 })
 
 test("Shouldn't register new user with existing email", async () => {
@@ -46,4 +46,31 @@ test("Shouldn't register new user with existing email", async () => {
     password: '8882cebbvw!#',
     phoneNumber: '01138373750'
   }).expect(409)
+})
+
+test('Should login the user', async () => {
+  const response = await agent.post('/users/login').send({
+    email: 'test@gmail.com',
+    password: '1234b0i@(bvw'
+  }).expect(200)
+
+  const accessInfo = CookieAccessInfo()
+  const ResponseRefreshToken = agent.jar.getCookie('refreshToken', accessInfo).value
+
+  const refreshToken = await RefreshToken.findOne({
+    where: {
+      userId: response.body.user.id,
+      token: ResponseRefreshToken
+    }
+  })
+  console.log(refreshToken)
+  expect(refreshToken).not.toBeNull()
+  expect(refreshToken.token).toBe(ResponseRefreshToken)
+})
+
+test("Shouldn't login the user for wrong credentials", async () => {
+  const response = await agent.post('/users/login').send({
+    email: 'test@gmail.com',
+    password: 'not the right password'
+  }).expect(401)
 })

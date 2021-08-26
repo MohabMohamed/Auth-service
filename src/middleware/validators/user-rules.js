@@ -26,4 +26,16 @@ const PostUserRules = () => {
   ]
 }
 
-module.exports = { PostUserRules }
+const postLogin = () => {
+  return [
+    body('email')
+      .trim()
+      .notEmpty()
+      .toLowerCase()
+      .normalizeEmail(),
+
+    body('password').notEmpty()
+  ]
+}
+
+module.exports = { PostUserRules, postLogin }
