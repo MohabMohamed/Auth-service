@@ -1,4 +1,5 @@
 const express = require('express')
+const cookieParser = require('cookie-parser')
 const { NODE_ENV_ENUM, runIfEnv, runIfNotEnv } = require('./util/node-env')
 const healthRouter = require('./routers/health')
 const userRouter = require('./routers/user')
@@ -33,6 +34,7 @@ runIfEnv(NODE_ENV_ENUM.dev, () => {
 })
 
 app.use(express.json())
+app.use(cookieParser())
 app.use(healthRouter)
 app.use(userRouter)
 

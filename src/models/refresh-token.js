@@ -24,10 +24,9 @@ const RefreshToken = sequelize.define(
   }
 )
 
-RefreshToken.getUserByToken = async (refreshTokenId, refreshToken) => {
+RefreshToken.getUserByToken = async refreshToken => {
   const matchedRefreshToken = await RefreshToken.findOne({
     where: {
-      id: parseInt(refreshTokenId),
       token: refreshToken
     },
     include: 'user'
