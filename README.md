@@ -104,3 +104,16 @@ Status codes:
 401:
   The user credentials are wrong.
 ```
+
+### `Get /users/logout`
+
+logout the user from this session.
+
+Status codes:
+
+```yaml
+        200:
+          The user logged out successfully.
+        401:
+          can't logout the user.
+```

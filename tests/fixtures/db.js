@@ -9,13 +9,19 @@ const firstUser = {
   phoneNumber: '01048486'
 }
 
+const firstRefreshToken = User.generateRefreshToken()
+
 const setupDatabase = async () => {
   await User.destroy({ where: {} })
-  await User.create(firstUser)
+  firstUser.refreshToken = { token: firstRefreshToken }
+
+  await User.create(firstUser, {
+    include: ['refreshToken']
+  })
 }
 
 const cleanDB = async () => {
   db.sequelize.close()
 }
 
-module.exports = { firstUser, setupDatabase, cleanDB }
+module.exports = { firstUser, firstRefreshToken, setupDatabase, cleanDB }

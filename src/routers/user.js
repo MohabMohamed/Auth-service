@@ -3,6 +3,7 @@ const User = require('../models/user')
 const RefreshToken = require('../models/refresh-token')
 const rules = require('../middleware/validators/user-rules')
 const validate = require('../middleware/validators/validator')
+const auth = require('../middleware/auth')
 
 const router = new express.Router()
 
@@ -53,6 +54,32 @@ router.post('/users/login', rules.postLogin(), validate, async (req, res) => {
   } catch (error) {
     const statusCode = error.code || 400
     res.status(statusCode).send(error)
+  }
+})
+
+router.get('/users/logout', auth, async (req, res) => {
+  try {
+    if (!req.refreshToken) {
+      throw new Error()
+    }
+    await RefreshToken.destroy({
+      where: {
+        token: req.refreshToken
+      }
+    })
+
+    res.cookie('accessToken', null, {
+      maxAge: 0,
+      httpOnly: true
+    })
+
+    res.cookie('refreshToken', null, {
+      maxAge: 0,
+      httpOnly: true
+    })
+    res.send({ ok: true })
+  } catch (e) {
+    res.status(401).send()
   }
 })
 

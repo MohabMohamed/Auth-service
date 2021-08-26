@@ -1,0 +1,13 @@
+paths:
+  /users/logout:
+    get:
+      tags:
+        - user
+      summary: logout the user from this session.
+      produces:
+        - application/json
+      responses:
+        200:
+          description: The user logged out successfully.
+        401:
+          description: can't logout the user.

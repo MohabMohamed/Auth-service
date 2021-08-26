@@ -18,6 +18,7 @@ const auth = async (req, res, next) => {
       }
 
       if (payload) {
+        req.refreshToken = refreshToken
         req.accessToken = accessToken
         req.user = payload
         return next()
@@ -44,6 +45,7 @@ const auth = async (req, res, next) => {
 
     const newAccessToken = user.generateAccessToken()
 
+    req.refreshToken = refreshToken
     req.accessToken = newAccessToken
     req.user = user
     res.cookie('accessToken', newAccessToken, {
@@ -52,7 +54,8 @@ const auth = async (req, res, next) => {
     })
     return next()
   } catch (error) {
-    res.status(error.code).send(error)
+    const statusCode = error.code || 401
+    res.status(statusCode).send(error)
   }
 }
 

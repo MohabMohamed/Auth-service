@@ -1,6 +1,6 @@
 const request = require('supertest')
 const { CookieAccessInfo } = require('cookiejar')
-const { setupDatabase, cleanDB } = require('./fixtures/db')
+const { setupDatabase, cleanDB, firstRefreshToken } = require('./fixtures/db')
 const app = require('../src/app')
 const User = require('../src/models/user')
 const RefreshToken = require('../src/models/refresh-token')
@@ -73,4 +73,13 @@ test("Shouldn't login the user for wrong credentials", async () => {
     email: 'test@gmail.com',
     password: 'not the right password'
   }).expect(401)
+})
+
+test('should logout the user', async () => {
+  agent.jar.setCookie(`refreshToken=${firstRefreshToken}`)
+  await agent.get('/users/logout').send().expect(200)
+
+  const matchedRefreshToken = await RefreshToken.findOne({ where: { token: firstRefreshToken } })
+
+  expect(matchedRefreshToken).toBeNull()
 })
