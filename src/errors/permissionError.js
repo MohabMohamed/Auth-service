@@ -5,4 +5,11 @@ const notPermitted = () => {
   }
 }
 
-module.exports = { notPermitted }
+const noMatchingRoleId = () => {
+  return {
+    code: 404,
+    errors: ["There's no role with the given role id."]
+  }
+}
+
+module.exports = { notPermitted, noMatchingRoleId }

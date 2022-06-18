@@ -173,6 +173,39 @@ Status codes:
   There's a role with the same name.
 ```
 
+### `POST /permissions`
+
+Add a new permission to access a resource to a role.
+
+Request:
+
+```js
+{
+    httpMethod: String,
+    path: String,
+    roleId: Number
+}
+```
+
+Response:
+
+```js
+{
+    httpMethod: String,
+    path: String,
+    roleId: Number
+}
+```
+
+Status codes:
+
+```yaml
+201:
+  permission created.
+401:
+  unauthorized to create a permission.
+```
+
 ### `POST /authorize`
 
 check if user authorized to access an endpoint on another service.
@@ -202,7 +235,3 @@ Status codes:
 401:
   unauthorized.
 ```
-
-## Leftout work
-
-some endpoint related to roles and permissions and implementing a caching layer for permissions with redis.

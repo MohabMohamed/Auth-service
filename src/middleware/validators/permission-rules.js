@@ -9,4 +9,14 @@ const authenticateRole = () => {
   ]
 }
 
-module.exports = { authenticateRole }
+const postPermission = () => {
+  return [
+    body(['httpMethod', 'path'])
+      .trim()
+      .notEmpty()
+      .toLowerCase(),
+    body('roleId').isNumeric()
+  ]
+}
+
+module.exports = { authenticateRole, postPermission }
