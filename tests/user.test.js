@@ -27,6 +27,7 @@ test('Should register new user', async () => {
   const accessInfo = CookieAccessInfo()
   const ResponseRefreshToken = agent.jar.getCookie('refreshToken', accessInfo).value
 
+
   const refreshToken = await RefreshToken.findOne({
     where: {
       userId: createdUserId,
@@ -57,6 +58,7 @@ test('Should login the user', async () => {
   const accessInfo = CookieAccessInfo()
   const ResponseRefreshToken = agent.jar.getCookie('refreshToken', accessInfo).value
 
+
   const refreshToken = await RefreshToken.findOne({
     where: {
       userId: response.body.user.id,
@@ -64,12 +66,13 @@ test('Should login the user', async () => {
     }
   })
 
+
   expect(refreshToken).not.toBeNull()
   expect(refreshToken.token).toBe(ResponseRefreshToken)
 })
 
 test("Shouldn't login the user for wrong credentials", async () => {
-  const response = await agent.post('/users/login').send({
+  await agent.post('/users/login').send({
     email: 'test@gmail.com',
     password: 'not the right password'
   }).expect(401)

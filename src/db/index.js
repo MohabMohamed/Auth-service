@@ -20,13 +20,28 @@ Object.keys(models).forEach(modelName => {
   }
 })
 
+const getTransaction = async () => {
+  return sequelize.transaction()
+}
+
+const rollBackTransaction = async transaction => {
+  return transaction.rollback()
+}
+
+const commitTransaction = async transaction => {
+  return transaction.commit()
+}
+
 const DB = {
   sequelize,
   models,
   initDB: async function () {
     await sequelize.sync()
     await models.Role.insertBasicRoles()
-  }
+  },
+  getTransaction,
+  rollBackTransaction,
+  commitTransaction
 }
 
 module.exports = DB
