@@ -235,3 +235,26 @@ Status codes:
 401:
   unauthorized.
 ```
+
+### `Delete /permissions/:id`
+
+Delete a permission with it's id.
+
+Response:
+
+```js
+{
+    httpMethod: String,
+    path: String,
+    roleId: Number
+}
+```
+
+Status codes:
+
+```yaml
+200:
+  permission deleted.
+401:
+  unauthorized to delete a permission.
+```

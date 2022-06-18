@@ -41,3 +41,28 @@ test('Should post new permission', async () => {
 
   expect(matchedPermission).not.toBeNull()
 })
+
+test('Should delete permission', async () => {
+  agent.jar.setCookie(`refreshToken=${firstRefreshToken}`)
+
+  const permission = await Permission.findOne({
+    where: {
+      httpMethod: 'post',
+      path: '/products'
+    }
+  })
+
+  await agent
+    .delete(`/permissions/${permission.id}`)
+    .send()
+    .expect(200)
+
+  const matchedPermission = await Permission.findOne({
+    where: {
+      httpMethod: 'post',
+      path: '/products'
+    }
+  })
+
+  expect(matchedPermission).toBeNull()
+})

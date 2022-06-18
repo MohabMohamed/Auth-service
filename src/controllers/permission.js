@@ -1,6 +1,11 @@
 const Permission = require('../models/permission')
 const PermissionDto = require('../dtos/permission')
-const { notPermitted, noMatchingRoleId } = require('../errors/permissionError')
+const {
+  notPermitted,
+  noMatchingRoleId,
+  noMatchingPermissionId
+} = require('../errors/permissionError')
+
 const Role = require('../models/role')
 
 const {
@@ -67,4 +72,28 @@ const postPermission = async postPermissionDto => {
   }
 }
 
-module.exports = { authorize, postPermission }
+const deletePermission = async permissionId => {
+  const transaction = await getTransaction()
+
+  try {
+    const matchedPermission = await Permission.findByPk(Number(permissionId), {
+      transaction
+    })
+
+    if (!matchedPermission) {
+      throw noMatchingPermissionId()
+    }
+    const deletedPermission = await matchedPermission.destroy({ transaction })
+
+    const deletedPermissionResponse = new PermissionDto.PostPermissionResponse(
+      deletedPermission
+    )
+    await commitTransaction(transaction)
+    return deletedPermissionResponse
+  } catch (error) {
+    await rollBackTransaction(transaction)
+    throw error
+  }
+}
+
+module.exports = { authorize, postPermission, deletePermission }

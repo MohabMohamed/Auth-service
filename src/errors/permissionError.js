@@ -12,4 +12,11 @@ const noMatchingRoleId = () => {
   }
 }
 
-module.exports = { notPermitted, noMatchingRoleId }
+const noMatchingPermissionId = () => {
+  return {
+    code: 404,
+    errors: ["There's no permission with the given id."]
+  }
+}
+
+module.exports = { notPermitted, noMatchingRoleId, noMatchingPermissionId }

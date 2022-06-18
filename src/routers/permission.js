@@ -57,4 +57,21 @@ router.post(
   }
 )
 
+router.delete(
+  '/permissions/:id',
+  authenticate,
+  authorize([basicRoles.superAdmin.roleName]),
+  async (req, res) => {
+    try {
+      const response = await PermissionControlller.deletePermission(
+        req.params.id
+      )
+
+      sendResponse(res, 200, response)
+    } catch (error) {
+      sendResponseWithError(res, 401, error)
+    }
+  }
+)
+
 module.exports = router
