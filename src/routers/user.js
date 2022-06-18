@@ -1,110 +1,59 @@
 const express = require('express')
-const User = require('../models/user')
-const RefreshToken = require('../models/refresh-token')
+
 const rules = require('../middleware/validators/user-rules')
 const validate = require('../middleware/validators/validator')
 const { authenticate } = require('../middleware/auth')
+const UserController = require('../controllers/user')
+const UserDto = require('../dtos/user')
+const { sendResponse, sendResponseWithError } = require('../util/httpResponse')
 
 const router = new express.Router()
 
 router.post('/users', rules.PostUserRules(), validate, async (req, res) => {
   try {
-    const newUser = await User.register(req.body)
+    const userRegistrationDto = new UserDto.UserRegistrationDto(req.body)
 
-    const accessToken = newUser.generateAccessToken()
-    const refreshToken = newUser.refreshToken[0].token
+    const response = await UserController.registerUser(userRegistrationDto)
 
-    res.cookie('accessToken', accessToken, {
-      maxAge: Number(process.env.ACCESS_TOKEN_LIFE_SPAN),
-      httpOnly: true
-    })
-
-    res.cookie('refreshToken', refreshToken, {
-      maxAge: Number(process.env.REFRESH_TOKEN_LIFE_SPAN),
-      httpOnly: true
-    })
-
-    res.status(201).send({ user: newUser, accessToken, refreshToken })
+    sendResponse(res, 201, response)
   } catch (error) {
-    const statusCode = error.code || 400
-    res.status(statusCode).send(error)
+    sendResponseWithError(res, 400, error)
   }
 })
 
 router.post('/users/login', rules.postLogin(), validate, async (req, res) => {
   try {
-    const user = await User.findByCredentials(req.body.email, req.body.password)
+    const userLoginnDto = new UserDto.UserLoginDto(req.body)
+    const response = await UserController.loginUser(userLoginnDto)
 
-    const accessToken = user.generateAccessToken()
-    const refreshToken = User.generateRefreshToken()
-
-    await RefreshToken.create({ token: refreshToken, userId: user.id })
-
-    res.cookie('accessToken', accessToken, {
-      maxAge: Number(process.env.ACCESS_TOKEN_LIFE_SPAN),
-      httpOnly: true
-    })
-
-    res.cookie('refreshToken', refreshToken, {
-      maxAge: Number(process.env.REFRESH_TOKEN_LIFE_SPAN),
-      httpOnly: true
-    })
-
-    res.status(200).send({ user, accessToken, refreshToken })
+    sendResponse(res, 200, response)
   } catch (error) {
-    const statusCode = error.code || 400
-    res.status(statusCode).send(error)
+    sendResponseWithError(res, 400, error)
   }
 })
 
 router.get('/users/logout', authenticate, async (req, res) => {
   try {
-    if (!req.refreshToken) {
-      throw new Error()
-    }
-    await RefreshToken.destroy({
-      where: {
-        token: req.refreshToken
-      }
-    })
+    const userLogoutDto = new UserDto.UserLogoutDto(req.refreshToken)
 
-    res.cookie('accessToken', null, {
-      maxAge: 0,
-      httpOnly: true
-    })
+    const response = await UserController.logoutUser(userLogoutDto)
 
-    res.cookie('refreshToken', null, {
-      maxAge: 0,
-      httpOnly: true
-    })
-    res.send({ ok: true })
-  } catch (e) {
-    res.status(401).send()
+    sendResponse(res, 200, response)
+  } catch (error) {
+    sendResponseWithError(res, 401, error)
   }
 })
 
 router.get('/users/logoutAll', authenticate, async (req, res) => {
   try {
-    if (!req.refreshToken) {
-      throw new Error()
-    }
-    await RefreshToken.destroy({
-      where: {
-        userId: req.user.id
-      }
-    })
+    const userLogoutAllDto = new UserDto.UserLogoutAllDto(
+      req.refreshToken,
+      req.user.id
+    )
 
-    res.cookie('accessToken', null, {
-      maxAge: 0,
-      httpOnly: true
-    })
+    const response = await UserController.logoutAllUser(userLogoutAllDto)
 
-    res.cookie('refreshToken', null, {
-      maxAge: 0,
-      httpOnly: true
-    })
-
-    res.send({ ok: true })
+    sendResponse(res, 200, response)
   } catch (e) {
     res.status(401).send()
   }

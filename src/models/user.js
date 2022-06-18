@@ -67,11 +67,12 @@ const User = sequelize.define(
   }
 )
 
-User.findByCredentials = async (email, password) => {
+User.findByCredentials = async (email, password, transaction) => {
   const user = await User.findOne({
     where: {
       email
-    }
+    },
+    transaction
   })
 
   if (!user) {
@@ -133,14 +134,15 @@ User.generateRefreshToken = function () {
   )
 }
 
-User.register = async userData => {
+User.register = async (userData, transaction) => {
   // remove roleId and id if they present in the request
   const { roleId, id, ...user } = Object.assign({}, userData)
 
   const matchedUser = await User.findOne({
     where: {
       email: user.email
-    }
+    },
+    transaction
   })
 
   if (matchedUser) {
@@ -156,7 +158,8 @@ User.register = async userData => {
         refreshToken: { token: refreshToken }
       },
       {
-        include: ['refreshToken']
+        include: ['refreshToken'],
+        transaction
       }
     )
     return newUser

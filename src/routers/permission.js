@@ -2,9 +2,9 @@ const express = require('express')
 const permissionRules = require('../middleware/validators/permission-rules')
 const validate = require('../middleware/validators/validator')
 const { authenticate } = require('../middleware/auth')
-const Permission = require('../models/permission')
-const Role = require('../models/role')
-const { notPermitted } = require('../errors/permissionError')
+const permissionDto = require('../dtos/permission')
+const PermissionControlller = require('../controllers/permission')
+const { sendResponse, sendResponseWithError } = require('../util/httpResponse')
 
 const router = new express.Router()
 
@@ -15,20 +15,18 @@ router.post(
   authenticate,
   async (req, res) => {
     try {
-      const permission = Permission.findOne({
-        where: {
-          httpMethod: req.body.httpMethod,
-          path: req.body.path,
-          roleId: req.user.roleId
-        }
-      })
-      if (!permission) {
-        throw notPermitted()
-      }
-      res.status(200).send({ authorized: true })
+      const postAuthorizationDto = new permissionDto.PostAuthorizationDto(
+        req.body.httpMethod,
+        req.body.path,
+        req.user.roleId
+      )
+      const response = await PermissionControlller.authorize(
+        postAuthorizationDto
+      )
+
+      sendResponse(res, 200, response)
     } catch (error) {
-      const statusCode = error.code || 401
-      res.status(statusCode).send(error)
+      sendResponseWithError(res, 401, error)
     }
   }
 )
