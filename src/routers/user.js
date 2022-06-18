@@ -1,6 +1,5 @@
 const express = require('express')
-const User = require('../models/user')
-const RefreshToken = require('../models/refresh-token')
+
 const rules = require('../middleware/validators/user-rules')
 const validate = require('../middleware/validators/validator')
 const { authenticate } = require('../middleware/auth')
